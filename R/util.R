@@ -35,21 +35,24 @@ myhist <- function(x1, x2, binwidth = 0.5, xlim = c(-3, 3)) {
   p
 }
 
-myhist_bpmarg <- function(x1, x2, binwidth = 0.5, xlim = c(-3, 3)) {
+my_box_violin <- function(x1, x2, binwidth = 0.5, xlim = c(-3, 3)) {
   df <- data.frame(
     x = c(x1, x2),
     g = c(rep("a", length(x1)), rep("b", length(x2)))
   )
   
-  p <- ggplot(df, aes(x, fill = g)) +
-    geom_histogram(binwidth = binwidth, linewidth = 1) +
-    coord_cartesian(xlim = xlim)
-  
-  ggMarginal(p, type="boxplot")
+  p <- ggplot(df, aes(x = g, y = x, fill = g)) +
+    geom_boxplot() +
+    geom_violin(alpha = .25) +
+    coord_flip() +
+    theme(axis.title.x = element_blank()) +
+    theme(legend.position = "none")
+  p
 }
 
-t_test <- function(x1, x2, alpha = 0.05, var.equal = TRUE) {
-  test <- t.test(x2, x1, conf.level = 1 - alpha, var.equal = var.equal)
+t_test <- function(x1, x2, alpha = 0.05, var.equal = TRUE, paired = FALSE) {
+  test <- t.test(x2, x1, conf.level = 1 - alpha, var.equal = var.equal,
+                 paired = paired)
   
   sig_test <- (alpha >= test$p.value)
   
@@ -68,15 +71,15 @@ t_test <- function(x1, x2, alpha = 0.05, var.equal = TRUE) {
   )
 }
 
-t_test_power <- function(n1, n2, d) {
-  test_result <- pwr.t2n.test(n1, n2, d)
+t_test_power <- function(n1, n2, d, sig.level, power = NULL) {
+  test_result <- pwr.t2n.test(n1, n2, d, sig.level)
   
   sprintf("n1: %1d\nn2: %1d\npower: %0.3f\nalpha: %0.3f", 
           test_result$n1, test_result$n2, test_result$power,
           test_result$sig.level)
 }
 
-t_test_power_plot <- function(n1, d) {
-  test_result <- pwr.t2n.test(n1=n1, d=d, power=0.8, alternative="two.sided")
-  plot(test_result)
+t_test_power_plot <- function(n1, n2, d, sig.level) {
+  pwr.t2n.test(n1=n1, d=d, power=0.8, sig.level = sig.level, alternative="two.sided") |>
+    plot()
 }
