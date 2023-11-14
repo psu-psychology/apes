@@ -17,16 +17,16 @@ ui <- fluidPage(
   fluidRow(
     column(
       2,
-      numericInput("sample_size_a", "n_A", value = 75, min = 1),
+      numericInput("sample_size_a", "Sample size (n_A)", value = 75, min = 1),
       numericInput(
         "mean_a",
-        paste0(greeks("mu"), "_A"),
+        paste0("Mean (", greeks("mu"), "_A)"),
         value = 0,
         step = 0.1
       ),
       numericInput(
         "sd_a",
-        paste0(greeks("sigma"), "_A"),
+        paste0("Std Dev (", greeks("sigma"), "_A)"),
         value = 1,
         min = 0.1,
         step = 0.1
@@ -41,17 +41,16 @@ ui <- fluidPage(
       checkboxInput("paired_samples", "Paired Samples", value = FALSE)
     ),
     column(2,
-           numericInput("sample_size_b", "n_B", value = 75, min = 1),
+           numericInput("sample_size_b", "Sample size (n_B)", value = 75, min = 1),
            numericInput(
              "effect_size",
-             label = "d",
+             label = "Effect size (d)",
              value = 0.5,
              step = 0.1
            ),
            numericInput(
              "sd_b",
-             paste0(greeks("sigma"),
-                    "_B"),
+             paste0("Std Dev (", greeks("sigma"), "_B)"),
              value = 1,
              min = 0.1,
              step = 0.1)

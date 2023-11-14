@@ -44,7 +44,7 @@ my_box_violin <- function(x1, x2, binwidth = 0.5, xlim = c(-3, 3)) {
   p <- ggplot(df, aes(x = g, y = x, fill = g)) +
     geom_boxplot() +
     geom_violin(alpha = .25) +
-    coord_flip() +
+    coord_flip(ylim = xlim) +
     theme(axis.title.x = element_blank()) +
     theme(legend.position = "none")
   p
