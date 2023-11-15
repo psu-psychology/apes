@@ -1,0 +1,12 @@
+name: apes
+title: apes
+username: rick-o-gilmore
+account: rick-o-gilmore
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10532705
+bundleId: 7930426
+url: https://rick-o-gilmore.shinyapps.io/apes/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
