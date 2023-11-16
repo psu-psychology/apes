@@ -60,7 +60,8 @@ ui <- fluidPage(
       tabsetPanel(
         type = "tabs",
         tabPanel("Histogram", plotOutput("histPlot")),
-        tabPanel("Violin-Box", plotOutput("histBoxPlot")),
+        tabPanel("Violin-Box", plotOutput("violinBoxPlot")),
+        tabPanel("Mean-SD", plotOutput("pointRangePlot")),
         tabPanel("Power curve", plotOutput("powerPlot"))
       )
     )
@@ -106,18 +107,22 @@ server <- function(input, output, session) {
     })
   
   output$histPlot <- renderPlot({
-    myhist(sample_a(),
+    my_hist(sample_a(),
            sample_b(),
            binwidth = .5,
            xlim = c(-5, 5))
   }, res = 96)
   
-  output$histBoxPlot <- renderPlot({
+  output$violinBoxPlot <- renderPlot({
     my_box_violin(sample_a(),
            sample_b(),
            binwidth = .5,
            xlim = c(-5, 5))
   }, res = 96)
+  
+  output$pointRangePlot <- renderPlot({
+    my_point_range(sample_a(), sample_b(), xlim = c(-5, 5))
+  }, res =96)
   
   output$ttest <- renderText({
     t_test(sample_a(),

@@ -17,7 +17,7 @@ freqpoly <- function(x1, x2, binwidth = 0.1, xlim = c(-3, 3)) {
     coord_cartesian(xlim = xlim)
 }
 
-myhist <- function(x1, x2, binwidth = 0.5, xlim = c(-3, 3)) {
+my_hist <- function(x1, x2, binwidth = 0.5, xlim = c(-3, 3)) {
   df <- data.frame(
     x = c(x1, x2),
     g = c(rep("a", length(x1)), rep("b", length(x2)))
@@ -27,11 +27,10 @@ myhist <- function(x1, x2, binwidth = 0.5, xlim = c(-3, 3)) {
     geom_histogram(binwidth = binwidth, linewidth = 1) +
     coord_cartesian(xlim = xlim) +
     theme(legend.position = "none") +
+    theme(axis.title.x = element_blank()) +
     geom_vline(xintercept = mean(x1)) +
     geom_vline(xintercept = mean(x2))
     
-  # p + annotate("text", x = -3, y = 25, label = paste0(greeks("mu"), "A: ", format(mean(x1), 3, 2))) +
-  #   annotate("text", x = 3, y = 25, label = paste0(greeks("mu"), "B: ", format(mean(x2), 3, 2)))
   p
 }
 
@@ -41,11 +40,43 @@ my_box_violin <- function(x1, x2, binwidth = 0.5, xlim = c(-3, 3)) {
     g = c(rep("a", length(x1)), rep("b", length(x2)))
   )
   
-  p <- ggplot(df, aes(x = g, y = x, fill = g)) +
+  df.summ <- df |>
+    dplyr::group_by(g) |>
+    dplyr::summarize(se = sd(x)/sqrt(length(x)),
+                     x = mean(x))
+  
+  p <- df |>
+    ggplot() +
+    aes(x = g, y = x, fill = g) +
     geom_boxplot() +
     geom_violin(alpha = .25) +
+    geom_pointrange(aes(ymin = x + se, ymax = x - se), data = df.summ) +
+    coord_flip(ylim = xlim) +
+    theme(axis.title = element_blank()) +
+    theme(legend.position = "none")
+  p
+}
+
+my_point_range <- function(x1, x2, xlim = c(-3, 3)) {
+  df <- data.frame(
+    x = c(x1, x2),
+    g = c(rep("a", length(x1)), rep("b", length(x2)))
+  )
+  
+  df.summ <- df |>
+    dplyr::group_by(g) |>
+    dplyr::summarize(sd = sd(x),
+                     se = sd/sqrt(length(x)),
+                     x = mean(x))
+  
+  p <- df |>
+    ggplot() +
+    aes(x = g, y = x, fill = g, color = g) +
+    geom_jitter(alpha = .3, height = 0, width = .1) +
+    geom_pointrange(aes(ymin = x + sd, ymax = x - sd), color = "black", data = df.summ) +
     coord_flip(ylim = xlim) +
     theme(axis.title.x = element_blank()) +
+    theme(axis.title.y = element_blank()) +
     theme(legend.position = "none")
   p
 }
